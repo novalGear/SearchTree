@@ -1,0 +1,8 @@
+digraph G {
+  rankdir=TB;
+  ordering=out;
+  node [shape=record];
+  node_10 [label="{k: 10|h: 2|sz: 2}"];
+  node_10 -> node_5;
+  node_5 [label="{k: 5|h: 1|sz: 1}"];
+}
