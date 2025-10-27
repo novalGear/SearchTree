@@ -2,6 +2,9 @@
 #include <vector>
 #include <fstream>
 #include <cstdlib>
+
+
+
 void generateSVG(const std::string& dotFile, const std::string& svgFile) {
     std::string command = "dot -Tsvg " + dotFile + " -o " + svgFile;
     system(command.c_str());

@@ -1,0 +1,69 @@
+# OS tree
+
+## Сборка
+### Требования
+
+- C++17
+- CMake >= 3.14
+- GoogleTest
+
+создание директории сборки
+```bash
+mkdir build
+cd build
+```
+
+Все команды ниже исполняются в директории build.
+
+Сборка и запуск тестов:
+```bash
+cmake .. -DBUILD_TESTS=ON
+make
+ctest
+```
+
+Сборка и компиляция основного приложения:
+```bash
+cmake .. -DBUILD_TESTS=OFF
+make
+```
+
+Запуск основного приложения:
+```bash
+cmake --build . --target run_input
+```
+что эквивалентно
+```bash
+./app/tree_app < input.txt
+```
+
+Запуск бенчмарка:
+```bash
+cmake --build . --target run_benchmark
+```
+или
+```bash
+./app/benchmark
+```
+## Сравнение с std::set
+
+Для оценки эффективности реализации поиска числа узлов с ключами на отрезке [a, b], было проведено сравнение с реализацией через std::set. OS_tree и std::set заполнялись 10000 элементов, после чего производились замеры для подсчета вхождений в 100 000 различных отрезков, идентичных для обоих структур данных. Измерения проводились с помощью std::chrono.
+
+Результаты:
+```bash
+
+--- std::set Results ---
+Run 1: Total found 333141511 items in 1994354 microseconds.
+Run 2: Total found 333141511 items in 1972853 microseconds.
+Run 3: Total found 333141511 items in 1988249 microseconds.
+Run 4: Total found 333141511 items in 1987416 microseconds.
+Run 5: Total found 333141511 items in 1992508 microseconds.
+
+--- OS_Tree Results ---
+Run 1: Total found 333141511 items in 27230 microseconds.
+Run 2: Total found 333141511 items in 27048 microseconds.
+Run 3: Total found 333141511 items in 27434 microseconds.
+Run 4: Total found 333141511 items in 27795 microseconds.
+Run 4: Total found 333141511 items in 27795 microseconds.
+Run 5: Total found 333141511 items in 27007 microseconds.
+```

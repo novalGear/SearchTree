@@ -150,25 +150,29 @@ void SearchTree::writeDot(const std::string& filename) {
     file.close();
 }
 
-int SearchTree::rank(Node* node, int x) {
+int SearchTree::node_rank(Node* node, int x) {
     if (!node) { return 0; }
 
     int curr_key = node->key_;
     if (curr_key > x) {
         // только в левом поддереве могут найтись искомые узлы
-        return rank(node->left, x);
+        return node_rank(node->left, x);
     } else {
         // значит текущий узел и все в его левом поддереве подходят
         int matching = 1;
         if (node->left) { matching += subtree_size(node->left); }
 
-        return rank(node->right, x) + matching;
+        return node_rank(node->right, x) + matching;
     }
 }
 
+int SearchTree::rank(int x) {
+    return node_rank(root_, x);
+}
+
 int SearchTree::count_in_range(int a, int b) {
-    if (a >= b) {return 0; }
-    return rank(root_, b) - rank(root_, a);
+    if (a > b) {return 0; }
+    return rank(b) - rank(a - 1);
 }
 
 SearchTree::SearchTree() : root_(nullptr) {}

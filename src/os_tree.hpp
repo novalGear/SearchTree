@@ -25,7 +25,9 @@ private:
     void destroy(Node* node);
 
     int height(Node* node);
+    // возвращает количество элементов в поддереве, включая node
     int subtree_size(Node* node);
+
     void upd_height(Node* node);
     void upd_subtree_size(Node* node);
     void upd_node_ctx(Node* node);
@@ -34,16 +36,23 @@ private:
     Node* rightRotate(Node* y);
     Node* leftRotate(Node* x);
 
-    // специфичные для задачи методы
-    int rank(Node* node, int x);
+
+    // Подсчитывает число узлов в поддереве со значением key <= x
+    int node_rank(Node* node, int x);
 
 public:
     SearchTree();
     ~SearchTree();
     void insert(int key);
-    void writeDot(const std::string& filename);
-    int count_in_range(int a, int b);
 
+    // графическая отладка
+    void writeDot(const std::string& filename);
+
+    // тоже, что и node_rank, только для всего дерева
+    int rank(int x);
+
+    // возвращает число узлов с key: key in (a, b]
+    int count_in_range(int a, int b);
 };
 
 }
