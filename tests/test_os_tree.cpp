@@ -33,6 +33,33 @@ void check_structure_with_dump() {
     std::cout << "HTML файл с визуализацией создан: data/dump/avl_tree_visualization.html\n";
 }
 
+
+void check_balancing_with_dump() {
+    OS_Tree::SearchTree tree;
+    std::vector<std::string> svgFiles;
+    int step = 0;
+
+    std::vector<int> values = {1, 2, 3, 4, 5, 6, 7, 9, 10};
+    for (int val : values) {
+        tree.insert(val);
+
+        std::string dotFile = "../../data/dump/bal_" + std::to_string(step) + ".dot";
+        std::string svgFile = "../../data/dump/bal_" + std::to_string(step) + ".svg";
+
+        tree.writeDot(dotFile);
+        generateSVG(dotFile, svgFile);
+
+        svgFiles.push_back("bal_" + std::to_string(step) + ".svg");
+
+        step++;
+    }
+
+    generateHTML(svgFiles, "../../data/dump/balancing.html");
+
+    std::cout << "HTML файл с визуализацией создан: data/dump/balancing.html\n";
+}
+
+
 TEST(OS_TreeTest, basic_test) {
     OS_Tree::SearchTree tree;
 
@@ -65,6 +92,7 @@ TEST(OS_TreeTest, rank_test) {
 
 int main(int argc, char* argv[]) {
     check_structure_with_dump();
+    check_balancing_with_dump();
 
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

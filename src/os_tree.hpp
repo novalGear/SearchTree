@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <fstream>
 #include <vector>
@@ -10,39 +11,43 @@ class SearchTree {
 private:
     struct Node {
         int key_;
-        int height_;
-        int subtree_size_;
-        Node* left;
-        Node* right;
+        int height_ = 1;
+        int subtree_size_ = 1;
+        std::unique_ptr<Node> left  = nullptr;
+        std::unique_ptr<Node> right = nullptr;
 
-        Node(int key) : key_(key), height_(1), subtree_size_(1), left(nullptr), right(nullptr) {}
+        Node(int key) : key_(key) {}
     };
 
-    Node* root_;
+    std::unique_ptr<Node> root_;
 
     // стандартные методы OS дерева
-    Node* insert(Node* node, int key);
-    void destroy(Node* node);
+    void insert(std::unique_ptr<Node>& node, int key);
 
-    int height(Node* node);
+    int height(std::unique_ptr<Node>& node);
     // возвращает количество элементов в поддереве, включая node
-    int subtree_size(Node* node);
+    int subtree_size(std::unique_ptr<Node>& node);
 
-    void upd_height(Node* node);
-    void upd_subtree_size(Node* node);
-    void upd_node_ctx(Node* node);
+    void upd_height(std::unique_ptr<Node>& node);
+    void upd_subtree_size(std::unique_ptr<Node>& node);
+    void upd_node_ctx(std::unique_ptr<Node>& node);
 
-    int getBalance(Node* node);
-    Node* rightRotate(Node* y);
-    Node* leftRotate(Node* x);
+    int get_balance(std::unique_ptr<Node>& node);
+    void right_rotate(std::unique_ptr<Node>& y);
+    void left_rotate(std::unique_ptr<Node>& x);
 
 
     // Подсчитывает число узлов в поддереве со значением key <= x
-    int node_rank(Node* node, int x);
+    int node_rank(std::unique_ptr<Node>& node, int x);
 
 public:
-    SearchTree();
-    ~SearchTree();
+    SearchTree() = default;
+    SearchTree(SearchTree&& other) noexcept = default;
+    SearchTree& operator=(SearchTree&& other) noexcept = default;
+    SearchTree(const SearchTree& other) = delete;
+    SearchTree& operator=(const SearchTree& other) = delete;
+    ~SearchTree() = default;
+
     void insert(int key);
 
     // графическая отладка

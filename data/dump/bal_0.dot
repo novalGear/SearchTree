@@ -1,0 +1,6 @@
+digraph G {
+  rankdir=TB;
+  ordering=out;
+  node [shape=record];
+  node_1 [label="{k: 1|h: 1|sz: 1}"];
+}
