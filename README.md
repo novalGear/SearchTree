@@ -41,7 +41,7 @@ cmake --build . --target run_input
 ```
 что эквивалентно
 ```bash
-./app/tree_app < input.txt
+./app/tree_app < ../data/input.txt
 ```
 
 Запуск бенчмарка:

@@ -38,6 +38,11 @@ add_custom_target(run_benchmark
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+
+if(DEBUG)
+    target_compile_definitions(tree_app PRIVATE DEBUG)
+endif()
+
 if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
