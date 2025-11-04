@@ -1,12 +1,11 @@
 #include <iostream>
 #include <set>
 #include <vector>
-#include <algorithm> // for std::distance, std::lower_bound, std::upper_bound
-#include <random>    // for std::random_device, std::mt19937, std::uniform_int_distribution
-#include <chrono>    // for timing
+#include <algorithm>
+#include <random>
+#include <chrono>
 #include <cassert>
 
-// Подключаем твой OS_Tree
 #include "os_tree.hpp"
 
 template <typename T>
@@ -22,19 +21,16 @@ int main() {
     const int M = 100000;
     const int NUM_RUNS = 5;
 
-    // Заполняем std::set
     std::set<int> my_set;
     for (int i = 0; i < N; ++i) {
         my_set.insert(i);
     }
 
-    // Заполняем OS_Tree
     OS_Tree::SearchTree my_tree;
     for (int i = 0; i < N; ++i) {
         my_tree.insert(i);
     }
 
-    // Генерация запросов
     std::vector<std::pair<int, int>> range_queries(M);
     const unsigned int seed = 12345;
     std::mt19937 gen(seed);
