@@ -28,6 +28,13 @@ cmake .. -DBUILD_TESTS=OFF
 make
 ```
 
+Сборка и компиляция основного приложения с отладочными принтами:
+```bash
+cmake .. -DBUILD_TESTS=OFF -DDEBUG
+make
+```
+
+
 Запуск основного приложения:
 ```bash
 cmake --build . --target run_input
@@ -87,4 +94,24 @@ Run 2: Total found 333141511 items in 171684 microseconds.
 Run 3: Total found 333141511 items in 174481 microseconds.
 Run 4: Total found 333141511 items in 172565 microseconds.
 Run 5: Total found 333141511 items in 172229 microseconds.
+```
+
+финальная версия с хранением узлов в std::vector:
+
+```bash
+Starting 5 runs for std::set with N=10000, M=100000.
+
+--- std::set Results ---
+Run 1: Total found 333141511 items in 1866064 microseconds.
+Run 2: Total found 333141511 items in 1846617 microseconds.
+Run 3: Total found 333141511 items in 1846328 microseconds.
+Run 4: Total found 333141511 items in 1853174 microseconds.
+Run 5: Total found 333141511 items in 1822880 microseconds.
+
+--- OS_Tree Results ---
+Run 1: Total found 333141511 items in 60207 microseconds.
+Run 2: Total found 333141511 items in 61777 microseconds.
+Run 3: Total found 333141511 items in 61907 microseconds.
+Run 4: Total found 333141511 items in 59674 microseconds.
+Run 5: Total found 333141511 items in 61394 microseconds.
 ```

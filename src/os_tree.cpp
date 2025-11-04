@@ -13,14 +13,6 @@ namespace OS_Tree {
 #define DBG_PRINT(...)
 #endif
 
-
-    // SearchTree() = default;
-    // SearchTree(SearchTree&& other) noexcept = default;
-    // SearchTree& operator=(SearchTree&& other) noexcept = default;
-    // SearchTree(const SearchTree& other) = delete;
-    // SearchTree& operator=(const SearchTree& other) = delete;
-    // ~SearchTree() = default;
-
 SearchTree::SearchTree() {
     sentinel_index_ = nodes_.size();
     nodes_.emplace_back(-999, sentinel_index_, -1);
@@ -127,7 +119,7 @@ void SearchTree::insert(int node_index, int key) {
         }
     } else {
         if (node_navi.get_key() == key) return;          // значит узел с таким ключом уже есть в дереве
-        add_node(node_navi.current_index_, key);          // значит нашли место для вставки
+        add_node(node_navi.current_index_, key);         // значит нашли место для вставки
     }
 
     DBG_PRINT("balancing\n");
@@ -146,10 +138,10 @@ void SearchTree::add_node(int parent_index, int key) {
         if (size_ > 0) {
             throw std::invalid_argument("add_node: parent is invalid");
         }
-        // значит дерево пустое
+        // значит дерево пустое, создаем реальный корень
         int real_root_index = nodes_.size();
-        nodes_.emplace_back(key, real_root_index, sentinel_index_); // создаем real root
-        nodes_[sentinel_index_].left_index_ = real_root_index;
+        nodes_.emplace_back(key, real_root_index, sentinel_index_);     // создаем real root
+        nodes_[sentinel_index_].left_index_ = real_root_index;          // вот это с real_root() должно быть согласовано
         size_++;
         DBG_PRINT("real root created\n");
         return;
@@ -163,8 +155,8 @@ void SearchTree::add_node(int parent_index, int key) {
         if (nodes_[parent_index].left_index_ != -1) throw std::invalid_argument("add_node: target child slot in parent is not empty");
 
         int new_node_index = nodes_.size();
-        nodes_.emplace_back(key, new_node_index, parent_index); // добавляем узел в массив узлов
-        nodes_[parent_index].left_index_ = new_node_index;      // связываем parent с новым узлом
+        nodes_.emplace_back(key, new_node_index, parent_index);     // добавляем узел в массив узлов
+        nodes_[parent_index].left_index_ = new_node_index;          // связываем parent с новым узлом
         size_++;
 
         DBG_PRINT("after:\n");
@@ -174,8 +166,8 @@ void SearchTree::add_node(int parent_index, int key) {
         if (nodes_[parent_index].right_index_ != -1) throw std::invalid_argument("add_node: target child slot in parent is not empty");
 
         int new_node_index = nodes_.size();
-        nodes_.emplace_back(key, new_node_index, parent_index); // добавляем узел в массив узлов
-        nodes_[parent_index].right_index_ = new_node_index;      // связываем parent с новым узлом
+        nodes_.emplace_back(key, new_node_index, parent_index);     // добавляем узел в массив узлов
+        nodes_[parent_index].right_index_ = new_node_index;         // связываем parent с новым узлом
         size_++;
 
         DBG_PRINT("after:\n");
@@ -298,20 +290,26 @@ int SearchTree::left_rotate(int A) {
 // методы для нахождения количества ключей на отрезке ===========================================================================//
 
 int SearchTree::node_rank(int node_index, int x) const {
-    if (!is_node_active(node_index)) { return 0; }
 
-    int curr_key = get_node_key(node_index);
-    if (curr_key > x) {
-        // только в левом поддереве могут найтись искомые узлы
-        return node_rank(nodes_[node_index].left_index_, x);
-    } else {
-        // значит текущий узел и все в его левом поддереве подходят
-        int matching = 1;
-        if (is_node_active(nodes_[node_index].left_index_)) {
-            matching += subtree_size(nodes_[node_index].left_index_);
+    int result = 0;
+    while (is_node_active(node_index)) {
+
+        int curr_key = nodes_[node_index].key_;
+        if (curr_key > x) {
+            // только в левом поддереве могут найтись искомые узлы
+            node_index = nodes_[node_index].left_index_;
+        } else {
+            // значит текущий узел и все в его левом поддереве подходят
+            int matching = 1;
+            if (is_node_active(nodes_[node_index].left_index_)) {
+                matching += subtree_size(nodes_[node_index].left_index_);
+            }
+            result += matching;
+            node_index = nodes_[node_index].right_index_;
         }
-        return node_rank(nodes_[node_index].right_index_, x) + matching;
     }
+
+    return result;
 }
 
 int SearchTree::rank(int x) const {
@@ -319,7 +317,7 @@ int SearchTree::rank(int x) const {
 }
 
 int SearchTree::count_in_range(int a, int b) const {
-    if (a > b) {return 0; }
+    if (a > b) { return 0; }
     return rank(b) - rank(a - 1);
 }
 
@@ -327,7 +325,6 @@ int SearchTree::count_in_range(int a, int b) const {
 void SearchTree::writeDot(const std::string& filename) const {
     std::ofstream file(filename);
     if (!file.is_open()) {
-        // Лучше выбросить исключение или обработать ошибку по-другому
         throw std::runtime_error("Could not open file for writing: " + filename);
     }
 
@@ -338,7 +335,6 @@ void SearchTree::writeDot(const std::string& filename) const {
 
     int root_index = real_root();
     if (size_ > 0 && is_node_active(root_index)) {
-        // Используем очередь для обхода в ширину (BFS)
         std::queue<int> q;
         q.push(root_index);
 
@@ -347,32 +343,21 @@ void SearchTree::writeDot(const std::string& filename) const {
             q.pop();
 
             if (!is_node_active(current_index)) {
-                // Если узел стал неактивным между моментом добавления в очередь и обработкой,
-                // это может указывать на проблему в логике дерева или на изменение структуры
-                // во время выполнения этой функции (например, если она вызывается из другого потока).
-                // Для отладки можно бросить исключение.
                 throw std::invalid_argument("writeDot: encountered a non-active node in queue.");
-                // Или просто continue; чтобы пропустить и продолжить.
-                // continue;
             }
 
             const Node& current = nodes_[current_index];
-
-            // Используем индекс как уникальный идентификатор узла в DOT
             std::string nodeId = "node_" + std::to_string(current_index);
 
-            // Формируем метку узла
             file << "  " << nodeId << " [label=\"{k: " << current.key_
                  << "|h: " << current.height_ << "|sz: " << current.subtree_size_ << "}\"];\n";
 
-            // Обработка левого потомка
             if (current.left_index_ != -1 && is_node_active(current.left_index_)) {
                 std::string childId = "node_" + std::to_string(current.left_index_);
                 file << "  " << nodeId << " -> " << childId << ";\n";
                 q.push(current.left_index_);
             }
 
-            // Обработка правого потомка
             if (current.right_index_ != -1 && is_node_active(current.right_index_)) {
                 std::string childId = "node_" + std::to_string(current.right_index_);
                 file << "  " << nodeId << " -> " << childId << ";\n";
@@ -394,23 +379,16 @@ void SearchTree::print_tree_structure(std::ostream& os, int node_index) const {
 
     const Node& current = nodes_[node_index];
 
-    os << "(" << current.key_ << " "; // Открывающая скобка и ключ текущего узла
-
-    // Рекурсивный вызов для левого поддерева
+    os << "(" << current.key_ << " ";
     print_tree_structure(os, current.left_index_);
-
-    os << " "; // Разделитель между левым и правым поддеревом
-
-    // Рекурсивный вызов для правого поддерева
+    os << " ";
     print_tree_structure(os, current.right_index_);
-
-    os << ")"; // Закрывающая скобка
+    os << ")";
 }
 
-// Публичный метод, который начинает обход от корня
 void SearchTree::print_tree_structure(std::ostream& os) const {
     print_tree_structure(os, real_root());
-    os << std::endl; // Добавим перевод строки в конце для красоты
+    os << std::endl;
 }
 
 // NAVIGATOR ====================================================================================================================//
@@ -486,10 +464,6 @@ int SearchTree::NodeNavigator::get_key() const {
     }
     return tree_->nodes_[current_index_].key_;
 }
-//
-// int SearchTree::NodeNavigator::get_index() const {
-//     return current_index_;
-// }
 
 int SearchTree::NodeNavigator::get_height() const {
     if (!is_current_index_valid()) {
@@ -504,14 +478,6 @@ int SearchTree::NodeNavigator::get_subtree_size() const {
     }
     return tree_->nodes_[current_index_].subtree_size_;
 }
-//
-// bool NodeNavigator::operator==(const NodeNavigator& other) const {
-//     return tree_ == other.tree_ && current_index_ == other.current_index_;
-// }
-//
-// bool NodeNavigator::operator!=(const NodeNavigator& other) const {
-//     return !(*this == other);
-// }
 
 SearchTree::NodeNavigator SearchTree::get_root_navigator() const {
     return NodeNavigator(this, real_root());
@@ -529,7 +495,6 @@ SearchTree::NodeNavigator SearchTree::get_navigator_by_key(int node_index, int k
     NodeNavigator node_navi = get_navigator_by_index(node_index);
     // либо найдем место для вставки, либо узел с данным ключом
     while(node_navi.is_current_index_valid()) {
-        // DBG_PRINT(".\n");
         int current_key = node_navi.get_key();
         if (key == current_key) {
             break;

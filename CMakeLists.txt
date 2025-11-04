@@ -3,6 +3,7 @@ project(OS_Tree)
 
 set(CMAKE_CXX_STANDARD 17)
 
+option(DEBUG "Enable debug mode" OFF)
 option(BUILD_TESTS "Build tests" ON)
 
 add_executable(tree_app
