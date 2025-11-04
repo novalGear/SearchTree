@@ -2,5 +2,5 @@ digraph G {
   rankdir=TB;
   ordering=out;
   node [shape=record];
-  node_10 [label="{k: 10|h: 1|sz: 1}"];
+  node_1 [label="{k: 10|h: 1|sz: 1}"];
 }

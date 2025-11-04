@@ -16,7 +16,7 @@ void check_structure_with_dump() {
     std::vector<int> values = {10, 5, 1, 3, 7, 2, 18, 9, 12, 14};
     for (int val : values) {
         tree.insert(val);
-
+        tree.print_tree_structure(std::cout);
         std::string dotFile = "../../data/dump/step_" + std::to_string(step) + ".dot";
         std::string svgFile = "../../data/dump/step_" + std::to_string(step) + ".svg";
 
@@ -42,6 +42,7 @@ void check_balancing_with_dump() {
     std::vector<int> values = {1, 2, 3, 4, 5, 6, 7, 9, 10};
     for (int val : values) {
         tree.insert(val);
+        tree.print_tree_structure(std::cout);
 
         std::string dotFile = "../../data/dump/bal_" + std::to_string(step) + ".dot";
         std::string svgFile = "../../data/dump/bal_" + std::to_string(step) + ".svg";

@@ -51,7 +51,7 @@ cmake --build . --target run_benchmark
 
 Результаты:
 
-на Node* с рекурсивном удалении дерева:
+на Node* с рекурсивным удалением дерева:
 ```bash
 
 --- std::set Results ---

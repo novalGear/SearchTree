@@ -2,13 +2,13 @@ digraph G {
   rankdir=TB;
   ordering=out;
   node [shape=record];
-  node_5 [label="{k: 5|h: 3|sz: 5}"];
-  node_5 -> node_1;
-  node_5 -> node_10;
-  node_10 [label="{k: 10|h: 2|sz: 2}"];
-  node_10 -> node_7;
-  node_7 [label="{k: 7|h: 1|sz: 1}"];
-  node_1 [label="{k: 1|h: 2|sz: 2}"];
-  node_1 -> node_3;
-  node_3 [label="{k: 3|h: 1|sz: 1}"];
+  node_2 [label="{k: 5|h: 3|sz: 5}"];
+  node_2 -> node_3;
+  node_2 -> node_1;
+  node_3 [label="{k: 1|h: 2|sz: 2}"];
+  node_3 -> node_4;
+  node_1 [label="{k: 10|h: 2|sz: 2}"];
+  node_1 -> node_5;
+  node_4 [label="{k: 3|h: 1|sz: 1}"];
+  node_5 [label="{k: 7|h: 1|sz: 1}"];
 }

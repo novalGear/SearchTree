@@ -5,6 +5,6 @@ digraph G {
   node_2 [label="{k: 2|h: 2|sz: 3}"];
   node_2 -> node_1;
   node_2 -> node_3;
-  node_3 [label="{k: 3|h: 1|sz: 1}"];
   node_1 [label="{k: 1|h: 1|sz: 1}"];
+  node_3 [label="{k: 3|h: 1|sz: 1}"];
 }
